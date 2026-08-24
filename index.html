@@ -404,7 +404,7 @@
         // Touch/tap for mobile - persistent highlighting
         [...legendItems, ...segments].forEach(el => {
             el.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                e.stopPropagation();
                 const id = el.dataset.id;
                 currentTappedId = id;
                 highlightId(id);
@@ -421,12 +421,17 @@
 
         // Clear highlight when user taps elsewhere on page
         document.addEventListener('touchstart', (e) => {
-            // If tap is not on a legend item or segment, clear highlight
-            if (currentTappedId && !e.target.closest('.legend-item') && !e.target.closest('circle')) {
-                currentTappedId = null;
-                clearHighlight(true);
+            // Only clear if we have a tapped section and it's not a legend/segment tap
+            if (currentTappedId) {
+                const isLegendItem = e.target.closest('.legend-item');
+                const isSegment = e.target.closest('svg') && e.target.tagName === 'circle';
+
+                if (!isLegendItem && !isSegment) {
+                    currentTappedId = null;
+                    clearHighlight(true);
+                }
             }
-        }, { passive: true });
+        });
     </script>
 </body>
 </html>
