@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Severance Breakdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: #ffffff;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .doughnut-chart {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-text {
+            position: absolute;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .center-amount {
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #28A228;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .center-label {
+            font-size: 12px;
+            color: #000;
+            margin-top: 0;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+        }
+
+        .doughnut-bg {
+            fill: none;
+            stroke: #f3f5f8;
+            stroke-linecap: butt;
+            stroke-width: 28;
+        }
+
+        .segment {
+            fill: none;
+            stroke-linecap: butt;
+            stroke-width: 28;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .segment-base {
+            stroke: #002099;
+        }
+
+        .segment-additional {
+            stroke: #005EFF;
+        }
+
+        .segment-commission {
+            stroke: #FFE359;
+            stroke-width: 18 !important;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s ease, background-color 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .legend-item:hover {
+            background-color: #E7EEFE;
+            border-color: #002099;
+        }
+
+        .legend-item.ghosted {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .legend-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .legend-content {
+            flex: 1;
+        }
+
+        .legend-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .legend-description {
+            font-size: 16px;
+            font-weight: 400;
+            color: #626264;
+            margin-bottom: 8px;
+        }
+
+        .legend-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 30px 16px;
+            }
+
+            .title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .chart-container {
+                margin-bottom: 40px;
+            }
+
+            .doughnut-chart {
+                width: 250px;
+                height: 250px;
+            }
+
+            .legend-item {
+                padding: 16px;
+            }
+
+            .legend-label {
+                font-size: 14px;
+            }
+
+            .legend-description {
+                font-size: 14px;
+            }
+
+            .legend-amount {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Severance breakdown</h1>
+
+        <div class="chart-container">
+            <div class="doughnut-chart">
+                <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="rotate(-90 150 150)">
+                        <!-- Background doughnut -->
+                        <circle class="doughnut-bg" cx="150" cy="150" r="80" />
+
+                        <!-- Base segment (67.92%) -->
+                        <circle class="segment segment-base" cx="150" cy="150" r="80"
+                                stroke-dasharray="327 176" stroke-dashoffset="0"
+                                data-id="base" />
+
+                        <!-- Additional segment (fills to complete circle) -->
+                        <circle class="segment segment-additional" cx="150" cy="150" r="80"
+                                stroke-dasharray="162 341" stroke-dashoffset="-334"
+                                data-id="additional" />
+
+                        <!-- Commission overlay on additional (positioned 10:50-11:50, away from gaps) -->
+                        <circle class="segment segment-commission" cx="150" cy="150" r="80"
+                                stroke-dasharray="32.3 471" stroke-dashoffset="-454"
+                                stroke-width="10" data-id="commission" />
+                    </g>
+                </svg>
+                <div class="center-text">
+                    <div class="center-amount">€11,000</div>
+                    <div class="center-label">Total you get</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item" data-id="base">
+                <div class="legend-box" style="background: #002099;"></div>
+                <div class="legend-content">
+                    <div class="legend-label">Base Severance:</div>
+                    <div class="legend-description">What you get without Allright</div>
+                    <div class="legend-amount">€8,000</div>
+                </div>
+            </div>
+
+            <div class="legend-item" data-id="additional">
+                <div class="legend-box" style="background: #005EFF;"></div>
+                <div class="legend-content">
+                    <div class="legend-label">Additional Severance:</div>
+                    <div class="legend-description">Extra you get with Allright</div>
+                    <div class="legend-amount">€4,000</div>
+                </div>
+            </div>
+
+            <div class="legend-item" data-id="commission">
+                <div class="legend-box" style="background: #FFE359;"></div>
+                <div class="legend-content">
+                    <div class="legend-label">Commission:</div>
+                    <div class="legend-description">Only if Allright get you more severance</div>
+                    <div class="legend-amount">€1,000</div>
+                </div>
+            </div>
+
+            <div class="legend-item" data-id="total">
+                <div class="legend-box" style="background: #28A228;"></div>
+                <div class="legend-content">
+                    <div class="legend-label">Total severance:</div>
+                    <div class="legend-description">What you receive with Allright</div>
+                    <div class="legend-amount">€11,000</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const legendItems = document.querySelectorAll('.legend-item');
+        const segments = document.querySelectorAll('.segment');
+
+        const centerAmount = document.querySelector('.center-amount');
+        const centerLabel = document.querySelector('.center-label');
+        let countUpAnimation = null;
+        let countUpAlreadyDone = false;
+
+        const sectionData = {
+            base: { amount: '€8,000', label: 'Base' },
+            additional: { amount: '€4,000', label: 'Additional' },
+            commission: { amount: '€1,000', label: 'Commission' },
+            total: { amount: '€11,000', label: 'Total you get' }
+        };
+
+        function updateCenterText(id) {
+            const data = sectionData[id];
+            if (data) {
+                centerAmount.textContent = data.amount;
+                centerLabel.textContent = data.label;
+
+                // Green for total, black for others
+                if (id === 'total') {
+                    centerAmount.style.color = '#28A228';
+                } else {
+                    centerAmount.style.color = '#000';
+                }
+            }
+        }
+
+        function clearHighlight(cancelAnimation = true) {
+            legendItems.forEach(item => item.classList.remove('ghosted'));
+            segments.forEach(seg => seg.style.opacity = '1');
+            updateCenterText('total');
+            if (cancelAnimation && countUpAnimation) {
+                cancelAnimationFrame(countUpAnimation);
+                countUpAnimation = null;
+            }
+        }
+
+        function highlightId(id) {
+            if (!id) {
+                clearHighlight();
+                return;
+            }
+
+            // Reset count flag when hovering a different section
+            if (id !== 'total') {
+                countUpAlreadyDone = false;
+            }
+
+            updateCenterText(id);
+
+            // Special case: total shows everything
+            if (id === 'total') {
+                legendItems.forEach(item => item.classList.remove('ghosted'));
+                segments.forEach(seg => seg.style.opacity = '1');
+                startCountUp();
+            } else {
+                legendItems.forEach(item => {
+                    if (item.dataset.id !== id) {
+                        item.classList.add('ghosted');
+                    }
+                });
+
+                segments.forEach(seg => {
+                    if (seg.dataset.id !== id) {
+                        seg.style.opacity = '0.4';
+                    }
+                });
+            }
+        }
+
+        function startCountUp() {
+            // Prevent recounting if already done in this session
+            if (countUpAlreadyDone) {
+                return;
+            }
+
+            const startTime = performance.now();
+            const duration = 800;
+            const startValue = 0;
+            const endValue = 11000;
+
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.round(startValue + (endValue - startValue) * progress);
+                centerAmount.textContent = '€' + value.toLocaleString('en-US');
+
+                if (progress < 1) {
+                    countUpAnimation = requestAnimationFrame(animate);
+                } else {
+                    countUpAnimation = null;
+                    countUpAlreadyDone = true;
+                }
+            };
+
+            countUpAnimation = requestAnimationFrame(animate);
+        }
+
+        // Legend hover
+        legendItems.forEach(item => {
+            item.addEventListener('mouseenter', () => highlightId(item.dataset.id));
+            item.addEventListener('mouseleave', () => {
+                // Don't cancel animation if leaving the total legend
+                if (item.dataset.id === 'total') {
+                    clearHighlight(false);
+                } else {
+                    clearHighlight(true);
+                }
+            });
+        });
+
+        // Doughnut hover
+        segments.forEach(seg => {
+            seg.addEventListener('mouseenter', () => highlightId(seg.dataset.id));
+            seg.addEventListener('mouseleave', () => clearHighlight(true));
+        });
+
+        // Touch/tap for mobile
+        [...legendItems, ...segments].forEach(el => {
+            el.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const id = el.dataset.id;
+                highlightId(id);
+                setTimeout(clearHighlight, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
