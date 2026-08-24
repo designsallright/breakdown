@@ -399,15 +399,34 @@
             seg.addEventListener('mouseleave', () => clearHighlight(true));
         });
 
-        // Touch/tap for mobile
+        let currentTappedId = null;
+
+        // Touch/tap for mobile - persistent highlighting
         [...legendItems, ...segments].forEach(el => {
             el.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 const id = el.dataset.id;
+                currentTappedId = id;
                 highlightId(id);
-                setTimeout(clearHighlight, 2000);
             });
         });
+
+        // Clear highlight on scroll
+        document.addEventListener('scroll', () => {
+            if (currentTappedId) {
+                currentTappedId = null;
+                clearHighlight(true);
+            }
+        }, { passive: true });
+
+        // Clear highlight when user taps elsewhere on page
+        document.addEventListener('touchstart', (e) => {
+            // If tap is not on a legend item or segment, clear highlight
+            if (currentTappedId && !e.target.closest('.legend-item') && !e.target.closest('circle')) {
+                currentTappedId = null;
+                clearHighlight(true);
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
